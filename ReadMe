@@ -1,0 +1,20 @@
+if-else
+	if(..)
+	{
+
+	}
+	else if 当成单独的表达式
+switch-case
+for;;; for in
+while()
+return 
+var 
+new
+function
+
+getValue getType
+
+变量hash 
+
+表达式计算：递归实现，链表将Hash链起来
+
