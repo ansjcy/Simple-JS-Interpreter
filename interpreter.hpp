@@ -52,7 +52,7 @@ public:
 class funcHandler
 {
 public:
-    void saveFunc(string line, hashMap* hsmp);
+    void saveFunc(string line, hashMap& hsmp);
     bool isValidName(string name);
     static unsigned int countNum(string& src, char dest);
     bool isValidNameChar(char ch, unsigned int pos = -1);

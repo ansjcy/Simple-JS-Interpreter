@@ -57,7 +57,7 @@ void interpreter::run()                 //entrance
     string line;
     while(true)
     {
-        line = readHand.getNextLineCode(&hsmp);
+        line = readHand.getNextLineCode(hsmp);
         execute(line, hsmp);
     }
 }
@@ -86,7 +86,7 @@ bool funcHandler::isValidNameChar(char ch, unsigned int pos)
     return false;
 }
 
-void funcHandler::saveFunc(string line, hashMap* hsmp )
+void funcHandler::saveFunc(string line, hashMap& hsmp )
 {
     stringstream in(line.c_str());
     string ins;
@@ -123,7 +123,7 @@ void funcHandler::saveFunc(string line, hashMap* hsmp )
             expression += ch;
             //cal_expression(expression);
         }
-        hsmp->pushFunc(funcName, func());
+        hsmp.pushFunc(funcName, func());
         cout << ins << " -> " <<  funcName << " -> " << expression << endl;
     }
     else if(ins == "function")
@@ -141,7 +141,7 @@ void funcHandler::saveFunc(string line, hashMap* hsmp )
             if(ch == ')')
             {
                 //if(!isValidName(funcName))
-                hsmp->pushFunc(funcName, func(func::FUNCTION, to_string(hsmp->currentLine), exp, count + 1));
+                hsmp.pushFunc(funcName, func(func::FUNCTION, to_string(hsmp.currentLine), exp, count + 1));
                 break;
             }
             if(ch == '(')
@@ -177,7 +177,7 @@ void interpreter::execute(string& code, hashMap& hsmp)
     in >> ins;  //get key word or not key word
     if(ins == "var" || ins == "function")
     {
-        funcHand.saveFunc(code, &hsmp);
+        funcHand.saveFunc(code, hsmp);
     }
     else if(ins == "if")
     {
