@@ -24,9 +24,9 @@ binary operator:
 ternary operator: ?!
 */
 
-Feedback cal_expression(std::string exp){
+Feedback cal_expression(std::string exp, hashMap &symbol){
 	exp = exp + ";";
-	Expression expr(exp);
+	Expression expr(symbol, exp);
 	Feedback fb = expr.expression();
 	return fb;
 }

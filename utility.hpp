@@ -2,6 +2,7 @@
 #define _UTILITY_HPP
 #include <string>
 
+
 /*
 token:
 null: type = '0'

@@ -31,8 +31,7 @@ private:
 	Feedback mod(token left, token right);
 
 public:
-	Expression();
-	Expression(std::string exp);
+	Expression(hashMap &symbol, std::string exp);
 	~Expression();	
 	Feedback expression();
 };

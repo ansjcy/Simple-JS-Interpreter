@@ -211,11 +211,8 @@ Feedback Expression::mod(token left, token right){
 	return fb;
 }
 
-Expression::Expression(){
 
-}
-
-Expression::Expression(string exp){
+Expression::Expression(hashMap &symbol, string exp): ts(symbol){
 	ts.putstream(exp);
 }
 

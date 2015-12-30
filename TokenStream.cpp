@@ -25,7 +25,8 @@ Feedback get_function(std::string s)//****call symbol table
 	return fb;
 }
 
-TokenStream::TokenStream(){
+
+TokenStream::TokenStream(hashMap& symbol1): symbol(symbol1){
 	full = false;
 	buffer.type = '0';  // no token in buffer
 }
