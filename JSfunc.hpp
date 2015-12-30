@@ -1,3 +1,11 @@
+//
+//  JSfunc.hpp
+//  intepreter
+//
+//  Created by Ah on 12/30/15.
+//  Copyright © 2015 Ah. All rights reserved.
+//
+
 #ifndef JSfunc_hpp
 #define JSfunc_hpp
 
@@ -15,6 +23,9 @@ struct funcT
     funcT()
     {
         parameters = NULL;
+        num = 0;
+        value = "";
+        type = -1;
     }
     
     funcT(char type, std::string value, std::string* parameters, unsigned int num):type(type),

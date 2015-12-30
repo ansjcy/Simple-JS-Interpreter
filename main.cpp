@@ -1,10 +1,24 @@
+//
+//  main.cpp
+//  intepreter
+//
+//  Created by Ah on 12/30/15.
+//  Copyright © 2015 Ah. All rights reserved.
+//
+
 #include <iostream>
 using namespace std;
 #include "JSVector.hpp"
 #include "JShashMap.hpp"
 #include "JSfunc.hpp"
+#include "interpreter.hpp"
+extern interpreter handler;
 int main(void)
 {
+    
+    //interpreter handler;
+    handler.run();
+    /*
     hashMap test;
     string  s[] = {"str1","str2"};
     string s1 = "123";
@@ -21,5 +35,12 @@ int main(void)
     cout << t.getType() << " " << t.getValue() << endl;
     cout << sb.getType() << " " << sb.getValue() << endl;
     cout << test.getFunc("234").getType() << " " << test.getFunc("234").getValue() << endl;
+     */
+    //char buffer[128];
+    //cin.getline(buffer, 128);
+    //string str = buffer;
+    //cout << str;
+    //cout << "lenght " << str.length() << endl;
+    //cout << buffer << "," << strlen(buffer);
     
 }

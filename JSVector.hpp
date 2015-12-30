@@ -1,3 +1,11 @@
+//
+//  JSVector.hpp
+//  intepreter
+//
+//  Created by Ah on 12/30/15.
+//  Copyright © 2015 Ah. All rights reserved.
+//
+
 #ifndef JSVector_hpp
 #define JSVector_hpp
 
