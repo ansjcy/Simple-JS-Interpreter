@@ -1,11 +1,3 @@
-//
-//  JShashMap.hpp
-//  intepreter
-//
-//  Created by Ah on 12/30/15.
-//  Copyright © 2015 Ah. All rights reserved.
-//
-
 #ifndef JShashMap_hpp
 #define JShashMap_hpp
 
@@ -20,9 +12,13 @@ struct hashMapStruct
 {
     map<string, func> hashFunc;
     hashMap* last;
+    unsigned int lineOffset;
+    unsigned int currentLine;
     
     hashMapStruct(){
         last = NULL;
+        lineOffset = 0;
+        currentLine = 0;
     }
     func getFunc(string line)
     {

@@ -1,11 +1,3 @@
-//
-//  JSfunc.hpp
-//  intepreter
-//
-//  Created by Ah on 12/30/15.
-//  Copyright © 2015 Ah. All rights reserved.
-//
-
 #ifndef JSfunc_hpp
 #define JSfunc_hpp
 
