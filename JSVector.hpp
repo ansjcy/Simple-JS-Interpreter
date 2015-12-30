@@ -50,6 +50,10 @@ typedef struct codeSegment
         }
         return code[idx];
     }
+    ~codeSegment()
+    {
+        delete[] code;
+    }
 }vectorCode;
 
 
