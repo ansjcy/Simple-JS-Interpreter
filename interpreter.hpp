@@ -25,11 +25,11 @@ public:
     void run() ;                //entrance
     void handleFeedback();
     void execute(string& code, hashMap& hsmp);
-    void doIf();                //in if.
-    void doWhile();
-    void doFor();
-    void doForeach();
-    void doSwitch();
+    void thisDoIf(hashMap& hsmp, stringstream& in);                //in if.
+    void thisDoWhile();
+    void thisDoFor();
+    void thisDoForeach();
+    void thisDoSwitch();
     void saveFunc();
     void doFunc();
     void doError();
@@ -47,7 +47,7 @@ public:
     vectorCode inputCode;       //store the codes
     unsigned int countLen;
     readHandler(){countLen = 0;}
-    string getNextLineCode(hashMap* hsmp);
+    string getNextLineCode(hashMap& hsmp);
 };
 class funcHandler
 {

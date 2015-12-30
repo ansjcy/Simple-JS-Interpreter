@@ -16,29 +16,33 @@ funcHandler funcHand;       //save func or var...
 readHandler readHand;       //read the next line code
 ifHandler ifHand;
 bool lastIf = false;
+bool isbreak = false;
+bool isreturn = false;
+func retVal;
 
 
-string readHandler::getNextLineCode(hashMap* hsmp)
+string readHandler::getNextLineCode(hashMap& hsmp)
 {
     string line;
-    if(hsmp->currentLine == countLen)
+    if(hsmp.currentLine == countLen)
     {
         char buffer[MAXSIZE];
         cin.getline(buffer, MAXSIZE);
         countLen += 1;
         line = buffer;
         inputCode.push_back(line);
-        hsmp->currentLine += 1;
-        hsmp->lineOffset = 0;
+        hsmp.currentLine += 1;
+        hsmp.lineOffset = 0;
     }
     else
     {
-        line = inputCode.getCode(hsmp->currentLine);
-        hsmp->currentLine += 1;
-        hsmp->lineOffset = 0;
+        line = inputCode.getCode(hsmp.currentLine);
+        hsmp.currentLine += 1;
+        hsmp.lineOffset = 0;
     }
     return line;
 }
+
 void interpreter::run()                 //entrance
 {
     //currentHsmp = new hashMap;
@@ -117,7 +121,6 @@ void funcHandler::saveFunc(string line, hashMap* hsmp )
             if(ch == ' ' && spaceIsIgnore)
                 continue;
             expression += ch;
-            
             //cal_expression(expression);
         }
         hsmp->pushFunc(funcName, func());
@@ -137,7 +140,6 @@ void funcHandler::saveFunc(string line, hashMap* hsmp )
         {
             if(ch == ')')
             {
-                //cout << funcName << ", " << count << " 1: "<<exp[0] <<" 2: " << exp[1] <<   endl;
                 //if(!isValidName(funcName))
                 hsmp->pushFunc(funcName, func(func::FUNCTION, to_string(hsmp->currentLine), exp, count + 1));
                 break;
@@ -166,8 +168,6 @@ void funcHandler::saveFunc(string line, hashMap* hsmp )
         }
         
     }
-    
-    
 }
 
 void interpreter::execute(string& code, hashMap& hsmp)
@@ -204,65 +204,78 @@ void interpreter::execute(string& code, hashMap& hsmp)
     {
         cout << "for" << endl;
     }
-    else if(ins == "new")
-    {
-        cout << "new" << endl;
-    }
+//    else if(ins == "new")
+//    {
+//        cout << "new" << endl;
+//    }
     else if(ins == "return")
     {
+        isreturn = true;
+        
         cout << "return" << endl;
     }
     else if(ins == "else")
     {
-        if(lastIf == true)
-        {
-            int count = 0;
-            while(true)
-            {
-                string line = readHand.getNextLineCode(&hsmp);
-                count += funcHandler::countNum(line, '}');
-                count -= funcHandler::countNum(line, '{');
-                if(count == 0) break;
-            }
-        }
-        else
-        {
-            //string line = readHand.getNextLineCode(&hsmp);
-            string exp = "";
-            int count = 0;
-            //int i =
-            char ch;
-            while(in >> ch)
-            {
-                if(ch == '(')
-                {
-                    count += 1;
-                    bool flag = false;
-                    while(true)
-                    {
-                        in.read(&ch, 1);
-                        if(ch == ')') count --;
-                        if(count == 0)
-                        {
-                            flag = true;
-                            break;
-                        }
-                        exp += ch;
-                    }
-                    if(flag) break;
-                }
-            }
-            if(exp.size() == 0) exp = "(1==1)";
-            ifHand.doIf(hsmp, exp);
-            cout << "else if( " << exp << ")" << endl;
-        }
-            
+        this->thisDoIf(hsmp, in);
+    }
+    else if(ins == "break")
+    {
+        isbreak = true;
     }
     else
     {
         //cout << "else " << ins << endl;
     }
 }
+
+void interpreter::thisDoIf(hashMap& hsmp, stringstream& in)
+{
+    if(lastIf == true)
+    {
+        int count = 0;
+        while(true)
+        {
+            string line = readHand.getNextLineCode(hsmp);
+            count += funcHandler::countNum(line, '}');
+            count -= funcHandler::countNum(line, '{');
+            if(count == 0) break;
+        }
+    }
+    else
+    {
+        string exp = "";
+        int count = 0;
+        char ch;
+        while(in >> ch)
+        {
+            //check grammar... else xxx??
+            if(ch == '(')
+            {
+                count += 1;
+                bool flag = false;
+                while(true)
+                {
+                    in.read(&ch, 1);
+                    if(ch == ')') count --;
+                    if(count == 0)
+                    {
+                        flag = true;
+                        break;
+                    }
+                    exp += ch;
+                }
+                if(flag) break;
+            }
+        }
+        if(exp.size() == 0) exp = "(1==1)";
+        ifHand.doIf(hsmp, exp);
+        cout << "else if( " << exp << ")" << endl;
+    }
+}
+
+
+
+
 
 
 void ifHandler::doIf(hashMap& lasthsmp, string exp)
@@ -276,10 +289,11 @@ void ifHandler::doIf(hashMap& lasthsmp, string exp)
         string line;
         while(true)
         {
-            line = readHand.getNextLineCode(&hsmp);
+            line = readHand.getNextLineCode(hsmp);
             count += funcHandler::countNum(line, '{');
             count -= funcHandler::countNum(line, '}');
             handler.execute(line, hsmp);
+            if(isbreak == true || isreturn) return;
             if(count == 0) break;
         }
         lastIf = true;
@@ -289,7 +303,7 @@ void ifHandler::doIf(hashMap& lasthsmp, string exp)
         int count = 0;
         while(true)
         {
-            string line = readHand.getNextLineCode(&hsmp);
+            string line = readHand.getNextLineCode(hsmp);
             count += funcHandler::countNum(line, '{');
             count -= funcHandler::countNum(line, '}');
             if(count == 0) break;
