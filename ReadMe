@@ -18,3 +18,16 @@ getValue getType
 
 表达式计算：递归实现，链表将Hash链起来
 
+function:
+getValue()
+getType()
+doIf()
+doWhile()
+doFor()
+doForeach()
+doSwitch()
+saveFunc() //var + function
+doFunc()
+
+doError()
+
