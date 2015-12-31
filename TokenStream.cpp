@@ -3,6 +3,37 @@
 using namespace std;
 
 //var
+Feedback TokenStream::get_value(token t){
+	t.type = '6';
+	Feedback fb = symbol.getValue(t);
+	fb.rtn_value.modifiable = true;
+	return fb;
+}
+
+Feedback TokenStream::get_value(string s){
+	token var;
+	var.type = '6';
+	var.var_name = s;
+	var.array_index = 0;
+	Feedback fb = symbol.getValue(var);
+	fb.rtn_value.modifiable = true;
+	return fb;
+}
+
+Feedback TokenStream::get_Func(string s){
+	token t;
+	t.type = '4';
+	t.value = s;
+	Feedback fb = symbol.getFunc(t);
+	return fb;
+}
+
+Feedback TokenStream::modify_value(token t){
+	Feedback fb = symbol.modifyValue(t);
+	return fb;
+}
+
+/*
 Feedback get_value(std::string s)//****call symbol table
 {
 	token var;
@@ -24,6 +55,7 @@ Feedback get_function(std::string s)//****call symbol table
 	Feedback fb(func);
 	return fb;
 }
+*/
 
 
 TokenStream::TokenStream(hashMap& symbol1): symbol(symbol1){
@@ -219,7 +251,7 @@ Feedback TokenStream::get(){
 				s += ch;
 			if (ch == '(') //function
 			{
-				fb = get_function(s); 
+				fb = get_Func(s); 
 				if (!fb.succeed){
 					fail_fb.reason = "Error: Cannot find the function: " + s + ".";
 					return fail_fb;

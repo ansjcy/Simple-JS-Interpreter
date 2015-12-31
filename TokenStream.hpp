@@ -15,10 +15,12 @@ public:
 	TokenStream(hashMap& symbol);
 	~TokenStream();
 	void putstream(std::string exp);
-
 	Feedback get();
-
 	Feedback putback(token t);
+	Feedback get_value(token t);
+	Feedback get_value(string s);
+	Feedback get_Func(string s);
+	Feedback modify_value(token t);
 };
 
 #endif

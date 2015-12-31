@@ -6,7 +6,7 @@
 #define mesg_left_cannot_modify "Error: Left expression cannot be modified."
 using namespace std;
 
-
+/*
 Feedback get_array_value(token t) //**** call symbol table
 {
 	cout << "get_array_value " << t.var_name << "[" << t.array_index << "]" << endl;
@@ -24,7 +24,7 @@ Feedback modify_value(token t) //**** call symbol table
 	Feedback fb;
 	return fb;
 }
-
+*/
 
 Feedback cal_function(token t) //****call interpreter
 {
@@ -263,7 +263,7 @@ Feedback Expression::expression(){
 			left = right;
 			left.modifiable = false;
 			if(left.var_name != "")
-				modify_value(left);
+				ts.modify_value(left);
 			break;
 		case 13:
 			rtn_fb = add(left, right);
@@ -271,7 +271,7 @@ Feedback Expression::expression(){
 			else left = rtn_fb.rtn_value;
 
 			left.modifiable = false;
-			modify_value(left);
+			ts.modify_value(left);
 
 			break;
 		case 14:
@@ -280,7 +280,7 @@ Feedback Expression::expression(){
 			else left = rtn_fb.rtn_value;
 
 			left.modifiable = false;
-			modify_value(left);
+			ts.modify_value(left);
 
 			break;
 		case 15:
@@ -289,7 +289,7 @@ Feedback Expression::expression(){
 			else left = rtn_fb.rtn_value;
 
 			left.modifiable = false;
-			modify_value(left);
+			ts.modify_value(left);
 
 			break;
 		case 16:
@@ -298,7 +298,7 @@ Feedback Expression::expression(){
 			else left = rtn_fb.rtn_value;
 
 			left.modifiable = false;
-			modify_value(left);
+			ts.modify_value(left);
 
 			break;
 		case 17:
@@ -307,7 +307,7 @@ Feedback Expression::expression(){
 			else left = rtn_fb.rtn_value;
 
 			left.modifiable = false;
-			modify_value(left);
+			ts.modify_value(left);
 
 			break;
 		default:
@@ -1028,7 +1028,7 @@ Feedback Expression::primary(){
 				return fail_fb;
 			}
 			t.array_index = (int)d.number;
-			rtn_fb = get_array_value(t);
+			rtn_fb = ts.get_value(t);
 			if (!rtn_fb.succeed) return rtn_fb;
 			else{
 				rtn_fb.rtn_value.modifiable = true;
