@@ -6,25 +6,6 @@
 #define mesg_left_cannot_modify "Error: Left expression cannot be modified."
 using namespace std;
 
-/*
-Feedback get_array_value(token t) //**** call symbol table
-{
-	cout << "get_array_value " << t.var_name << "[" << t.array_index << "]" << endl;
-	token var;
-	var.type = '1';
-	var.number = 2;
-	var.modifiable = true;
-	Feedback fb(var);
-	return fb;
-}
-
-Feedback modify_value(token t) //**** call symbol table
-{
-	cout << "modify_value " << t.var_name << "[" << t.array_index << "]" << endl;
-	Feedback fb;
-	return fb;
-}
-*/
 
 Feedback cal_function(token t) //****call interpreter
 {
@@ -228,6 +209,8 @@ Feedback Expression::expression(){
 	Feedback rtn_fb;
 	Feedback fail_fb("Error£¡");
 	token left, t, right;
+	string s;
+	int in;
 
 	rtn_fb = condition();
 	if (!rtn_fb.succeed) return rtn_fb;
@@ -246,7 +229,7 @@ Feedback Expression::expression(){
 				return fail_fb;
 			}
 			else{
-				rtn_fb = condition();
+				rtn_fb = expression();
 				if (!rtn_fb.succeed) return rtn_fb;
 				else right = rtn_fb.rtn_value;
 
@@ -260,10 +243,16 @@ Feedback Expression::expression(){
 		}
 		switch (t.type){
 		case '=':
+			if (left.var_name == ""){
+				fail_fb.reason = "Error: left of expression is not a valid var!";
+			}
+			s = left.var_name;
+			in = left.array_index;
 			left = right;
 			left.modifiable = false;
-			if(left.var_name != "")
-				ts.modify_value(left);
+			left.var_name = s;
+			left.array_index = in;
+			ts.modify_value(left);
 			break;
 		case 13:
 			rtn_fb = add(left, right);

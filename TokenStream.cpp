@@ -4,8 +4,11 @@ using namespace std;
 
 //var
 Feedback TokenStream::get_value(token t){
+	
+
 	t.type = '6';
 	Feedback fb = symbol.getValue(t);
+	fb.rtn_value.var_name = t.var_name;
 	fb.rtn_value.modifiable = true;
 	return fb;
 }
@@ -16,6 +19,7 @@ Feedback TokenStream::get_value(string s){
 	var.var_name = s;
 	var.array_index = 0;
 	Feedback fb = symbol.getValue(var);
+	fb.rtn_value.var_name = s;
 	fb.rtn_value.modifiable = true;
 	return fb;
 }
@@ -25,10 +29,12 @@ Feedback TokenStream::get_Func(string s){
 	t.type = '4';
 	t.value = s;
 	Feedback fb = symbol.getFunc(t);
+	fb.rtn_value.value = t.value;
 	return fb;
 }
 
 Feedback TokenStream::modify_value(token t){
+	cout << "modify_value " << t.var_name << "[" << t.array_index << "]" << endl;
 	Feedback fb = symbol.modifyValue(t);
 	return fb;
 }
