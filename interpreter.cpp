@@ -77,7 +77,7 @@ void interpreter::execute(string& code, hashMap& hsmp)
         while(in >> ch)
             exp += ch;
         ifHand.doIf(hsmp, exp);
-        cout << "if" << endl;
+       // cout << "if" << endl;
     }
     else if(ins == "while")
     {
@@ -86,7 +86,7 @@ void interpreter::execute(string& code, hashMap& hsmp)
         while(in >> ch)
             exp += ch;
         whileHand.doWhile(hsmp, exp);
-        cout << "while" << endl;
+      //  cout << "while" << endl;
     }
     else if(ins == "switch")
     {
@@ -254,7 +254,7 @@ void interpreter::thisDoIf(hashMap& hsmp, stringstream& in)
         }
         if(exp.size() == 0) exp = "(1==1)";
         ifHand.doIf(hsmp, exp);
-        cout << "else if( " << exp << ")" << endl;
+       // cout << "else if( " << exp << ")" << endl;
     }
 }
 
@@ -268,7 +268,7 @@ void ifHandler::doIf(hashMap& lasthsmp, string exp)
     
     if(handler.convert2str(fb) != STRFALSE) //????
     {
-        cout << "True.\n";
+       // cout << "True.\n";
         int count = 0;
         string line;
         while(true)
@@ -560,7 +560,11 @@ void funcHandler::saveFunc(string line, hashMap& hsmp )
                 continue;
             expression += ch;
         }
-        hsmp.pushFunc(funcName, func());
+        func var;
+        var.type = var.INT;
+        
+        hsmp.pushFunc(funcName, var);
+        cout << "expression: " << expression << endl;
         if(expression != funcName)
         {   Feedback fb = cal_expression(expression, hsmp);
             if(fb.succeed == false) { cout << fb.reason;}

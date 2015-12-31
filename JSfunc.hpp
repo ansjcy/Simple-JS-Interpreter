@@ -27,7 +27,7 @@ array: type = '6'  var_name = val_name  number = index;
 undefined: type = '7'
      */
 
-    enum{FUNCTION = '4', INT = '1', STRING = '3', BOOL = '5', DOUBLE = '2', ARRAY = '6'};
+    enum{FUNCTION = '4', INT = '1', STRING = '3', BOOL = '5', DOUBLE = '2', ARRAY = '6', UNDIFINED = '7'};
     char type;
     //function or var { int, string, bool, double, maybe array
     std::string value;     //if function, then it's address else its value in string format.

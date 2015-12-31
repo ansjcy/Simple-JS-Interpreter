@@ -58,9 +58,9 @@ struct hashMapStruct
            func fc = getFunc(t.var_name);
            token tk;
            tk.type = fc.type;
-           tk.array_index = 0;
+          // tk.array_index = 0;
            tk.modifiable = true;
-           if(fc.type == fc.INT || fc.type == fc.DOUBLE)
+           if(fc.value != "" &&(fc.type == fc.INT || fc.type == fc.DOUBLE))
                tk.number = stof(fc.getValue());
            tk.para = NULL;
            tk.value = fc.getValue();
@@ -72,13 +72,36 @@ struct hashMapStruct
            return Feedback("No such var");
        }
     }
+    bool modify(token t)
+    {
+        if(hashFunc.count(t.var_name) > 0)
+        {
+            hashFunc[t.var_name].type = t.type;
+            if(t.type == func::INT || t.type == func::DOUBLE)
+            {
+                cout << "t.number: " << t.number << endl;
+                hashFunc[t.var_name].value = to_string(t.number);
+            }
+            else
+                hashFunc[t.var_name].value = t.value;
+            return true;
+        }
+        else if(last)
+        {
+            return last->modify(t);
+        }
+        return false;
+    }
     Feedback getFunc(token t)
     {
         return Feedback();
     }
     Feedback modifyValue(token t)
     {
-        return Feedback();
+        if(modify(t))
+            return Feedback();
+        else
+            return Feedback("No such variables.\n");
     }
     
 };
