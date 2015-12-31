@@ -16,8 +16,9 @@
 #include <iostream>
 #include <iosfwd>
 #include <sstream>
+#include "utility.hpp"
 #define MAXSIZE 128
-
+#define STRFALSE ("0.000000")
 class interpreter
 {
     hashMap hsmp;
@@ -31,24 +32,30 @@ public:
     void thisDoForeach();
     void thisDoSwitch();
     void saveFunc();
-    void doFunc();
+    void doFunc(string& code, hashMap& lasthsmp);
     void doError();
+    string getExp(stringstream& in);
+    string convert2str(Feedback& fb);
 };
+
 class ifHandler
 {
 public:
     void doIf(hashMap& lasthsmp, string exp);
 };
 
-
-class readHandler
+class whileHandler
 {
 public:
-    vectorCode inputCode;       //store the codes
-    unsigned int countLen;
-    readHandler(){countLen = 0;}
-    string getNextLineCode(hashMap& hsmp);
+    void doWhile(hashMap& lasthsmp, string exp);
 };
+
+class forHandler
+{
+public:
+    void doFor(hashMap& lasthsmp, string exp);
+};
+
 class funcHandler
 {
 public:
@@ -58,6 +65,14 @@ public:
     bool isValidNameChar(char ch, unsigned int pos = -1);
 };
 
+class readHandler
+{
+public:
+    vectorCode inputCode;       //store the codes
+    unsigned int countLen;
+    readHandler(){countLen = 0;}
+    string getNextLineCode(hashMap& hsmp);
+};
 
 
 
