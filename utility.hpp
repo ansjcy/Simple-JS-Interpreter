@@ -14,20 +14,24 @@ function: type = '4'  value = function_name  number = # of parameter;
 null: type = '0'
 array: type = '6'  var_name = val_name  number = index;
 undefined: type = '7'
+class: '8'  value = class_name;
+class.var: t.type = 18; t.value = class_name; t.var_name = var_name;
+class.func: t.type = 19; t.value = calss_name; t.var_name = func_name; t.number = # of para; para = parameters;
+
 operator of one character: type = operator_name;
 operator of two character: type =
 1:'<='  2:'>='  3:'=='  4:'!='  5:'&&'  
 6:'||'  7:'<<'  8:'>>'  9:'++'  10:'--'
 11:'==='  12:'!=='  13£º'+='  14:'-='  15:'*='  
-16:'/='  17:'%='    
+16:'/='  17:'%='  18:'keyword' or class.var  19: class.function
 
-13:'keyword'  value = keyword
 keyword:
-"typeof"  "undefined"  "null"  "true"  "false"  ".length"
+"typeof"  "undefined"  "null"  "true"  "false"  ".length"  ".get"
+
 */
 
 struct token{
-	char type = '0';  // '0':null '1'£ºint '2':double '3':string '4':function '5':boolean  '6':array  '7':undefined
+	char type = '0';  // '0':null '1'£ºint '2':double '3':string '4':function '5':boolean  '6':undefined  '7':array  '8':class
 	std::string value = "";
 	double number = 0;
 	token *para;

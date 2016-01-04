@@ -6,7 +6,7 @@ using namespace std;
 Feedback TokenStream::get_value(token t){
 	
 
-	t.type = '6';
+	//t.type = '6';
 	Feedback fb = symbol.getValue(t);
 	fb.rtn_value.var_name = t.var_name;
 	fb.rtn_value.modifiable = true;
@@ -28,6 +28,16 @@ Feedback TokenStream::get_Func(string s){
 	token t;
 	t.type = '4';
 	t.value = s;
+	Feedback fb = symbol.getFunc(t);
+	fb.rtn_value.value = t.value;
+	return fb;
+}
+
+Feedback TokenStream::get_classFunc(string class_name, string func_name){
+	token t;
+	t.type = 19;
+	t.value = class_name;
+	t.var_name = func_name;
 	Feedback fb = symbol.getFunc(t);
 	fb.rtn_value.value = t.value;
 	return fb;
@@ -217,8 +227,15 @@ Feedback TokenStream::get(){
 			while (sstream.get(c_temp) && isalpha(c_temp)){
 				s += c_temp;
 			}
+			if (c_temp == '(') //class.function
+			{
+				fb.rtn_value.type = 19;
+				fb.rtn_value.value = s;
+				return fb;
+			}
+			//class.var
 			sstream.putback(c_temp);
-			fb.rtn_value.type = 13;
+			fb.rtn_value.type = 18;
 			fb.rtn_value.value = s;
 			return fb;
 		}

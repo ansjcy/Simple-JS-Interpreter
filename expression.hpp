@@ -29,6 +29,7 @@ private:
 	Feedback multi(token left, token right);
 	Feedback divide(token left, token right);
 	Feedback mod(token left, token right);
+	Feedback construct_func(token func);
 
 public:
 	Expression(hashMap &symbol, std::string exp);

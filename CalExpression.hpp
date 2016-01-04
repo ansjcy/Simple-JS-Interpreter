@@ -16,12 +16,20 @@ data type support:
 integer, double, bool, string, var, function, array
 
 Operation support:
-unary operator: '[]', '!', '~', '+', '-', '++', '--'; //'++' and '--' can only put before number, '[]' is for array
+unary operator: '[]', '!', '~', '+', '-', '++', '--'; //'++' and '--' can be put before number or after number, '[]' is for array
 binary operator: 
 	 arithmetic operation: '+', '-', '*', '/', '%', '<<', '>>';
 	 logical operation: '<', '>', '<=', '>=', '==', '!=', '&', '|', '&&', '||';
 	 assignment operation: '=', '+=', '-=', '*=', '/=', '%=';
 ternary operator: ?!
+
+String's method:
+String.length
+String.get(Integer) Integer can be an expression  eg: "abc".get(1+1);
+
+class's method:
+class.var: t.type = 18; t.value = class_name; t.var_name = var_name;
+class.func: t.type = 19; t.value = calss_name; t.var_name = func_name; t.number = # of para; para = parameters;
 */
 
 Feedback cal_expression(std::string exp, hashMap &symbol){

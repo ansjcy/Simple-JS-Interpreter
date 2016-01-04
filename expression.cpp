@@ -7,9 +7,9 @@
 using namespace std;
 
 
-Feedback cal_function(token t) //****call interpreter
+Feedback cal_function(token t, hashMap &hashmap) //****call interpreter
 {
-	cout << "cal_function: " << t.value << ". Para number: " << (int)t.number << endl;
+	cout << "cal_function: " << t.value << "." << t.var_name << " Para number: " << (int)t.number << endl;
 	for (int i = 0; i < (int)t.number; i++){
 		cout << t.para[i].type << " " << t.para[i].number << " " << t.para[i].value << endl;
 	}
@@ -192,6 +192,42 @@ Feedback Expression::mod(token left, token right){
 	return fb;
 }
 
+Feedback Expression::construct_func(token t){
+	Feedback rtn_fb;
+	token t_temp, d;
+	Feedback fail_fb("Error:");
+	t.para = new token[(int)t.number];
+	for (int i = 0; i < (int)t.number; i++){
+		rtn_fb = expression();
+		if (!rtn_fb.succeed) return rtn_fb;
+		else d = rtn_fb.rtn_value;
+		t.para[i] = d;
+
+		rtn_fb = ts.get();
+		if (!rtn_fb.succeed) return rtn_fb;
+		else t_temp = rtn_fb.rtn_value;
+
+		if (t_temp.type == ')' && i < (int)t.number - 1 || t_temp.type != ')' && i == (int)t.number - 1){
+			fail_fb.reason = "Error: the number of parameter in funtion " + t.value + "." + t.var_name + " is not correct! The right number: " + int2string((int)t.number);
+			return fail_fb;
+		}
+		else if (t_temp.type != ',' && i < (int)t.number - 1){
+			fail_fb.reason = "Error: ',' between parameters in a funtion is expected!";
+			return fail_fb;
+		}
+	}
+	if ((int)t.number == 0){
+		rtn_fb = ts.get();
+		if (!rtn_fb.succeed) return rtn_fb;
+		else t_temp = rtn_fb.rtn_value;
+
+		if (t_temp.type != ')'){
+			fail_fb.reason = "Error: a ')' is expected in the end of function";
+			return fail_fb;
+		}
+	}
+	return t;
+}
 
 Expression::Expression(hashMap &symbol, string exp): ts(symbol){
 	ts.putstream(exp);
@@ -951,52 +987,26 @@ Feedback Expression::primary(){
 			return fail_fb;
 		}
 		success_fb.rtn_value = d;
-		return success_fb;
+		break; //return success_fb;
 	}
 	case '1':
 	case '2':
 	case '3':
 		success_fb.rtn_value = t;
-		return success_fb;
+		break; // return success_fb;
 	case '4': //function
-		t.para = new token[(int)t.number];
-		for (int i = 0; i < (int)t.number; i++){
-			rtn_fb = expression();
-			if (!rtn_fb.succeed) return rtn_fb;
-			else d = rtn_fb.rtn_value;
-			t.para[i] = d;
+		rtn_fb = construct_func(t);
+		if (!rtn_fb.succeed) return rtn_fb;
+		else t = rtn_fb.rtn_value;
 
-			rtn_fb = ts.get();
-			if (!rtn_fb.succeed) return rtn_fb;
-			else t_temp = rtn_fb.rtn_value;
-
-			if (t_temp.type == ')' && i < (int)t.number - 1 || t_temp.type != ')' && i == (int)t.number - 1){
-				fail_fb.reason = "Error: the number of parameter in funtion " + t.value + " is not correct! The right number: " + int2string((int)t.number);
-				return fail_fb;
-			}
-			else if (t_temp.type != ',' && i < (int)t.number - 1){
-				fail_fb.reason = "Error: ',' between parameters in a funtion is expected!";
-				return fail_fb;
-			}
-		}
-		if ((int)t.number == 0){
-			rtn_fb = ts.get();
-			if (!rtn_fb.succeed) return rtn_fb;
-			else t_temp = rtn_fb.rtn_value;
-
-			if (t_temp.type != ')'){
-				fail_fb.reason = "Error: a ')' is expected in the end of function";
-				return fail_fb;
-			}
-		}
-		rtn_fb = cal_function(t); 
+		rtn_fb = cal_function(t, ts.symbol); 
 		if (!rtn_fb.succeed){
 			rtn_fb.reason += "(In function " + t.value + ")";
 			return rtn_fb;
 		}
 		else {
 			rtn_fb.rtn_value.modifiable = false;
-			return rtn_fb;
+			success_fb = rtn_fb; break; // return rtn_fb;
 		}
 	case '7': //array
 		rtn_fb = expression();
@@ -1023,12 +1033,15 @@ Feedback Expression::primary(){
 				rtn_fb.rtn_value.modifiable = true;
 				rtn_fb.rtn_value.var_name = t.var_name;
 				rtn_fb.rtn_value.array_index = t.array_index;
-				return rtn_fb;
+				success_fb = rtn_fb; break;// return rtn_fb;
 			}
 		}
 		rtn_fb = ts.get();
 		if (!rtn_fb.succeed) return rtn_fb;
 		else t_temp = rtn_fb.rtn_value;
+	case '8': //class
+		success_fb.rtn_value = t;
+		break;
 	case '-':
 		rtn_fb = primary();
 		if (!rtn_fb.succeed) return rtn_fb;
@@ -1090,9 +1103,9 @@ Feedback Expression::primary(){
 			return fail_fb;
 		}
 		else{
-			success_fb.rtn_value.number++;
+			rtn_fb.rtn_value.number++;
 			rtn_fb.rtn_value.modifiable = false;
-			return success_fb;
+			return rtn_fb;
 		}
 	case 10: //'--' before number
 		rtn_fb = primary();
@@ -1110,6 +1123,152 @@ Feedback Expression::primary(){
 		fail_fb.reason = "Error: primary expected.";
 		return fail_fb;
 	}
+
+	//process the op after expression
+	while (true) //get access to member of class successively using '.'
+	{
+		rtn_fb = ts.get();
+		if (!rtn_fb.succeed) return rtn_fb;
+		else t = rtn_fb.rtn_value;
+		if (t.type == 18){
+			if (success_fb.rtn_value.type == '3'){
+				if (t.value == "length"){
+					success_fb.rtn_value.type = '1';
+					success_fb.rtn_value.number = success_fb.rtn_value.value.length();
+				}
+				else if (t.value == "get"){
+					rtn_fb = ts.get();
+					if (!rtn_fb.succeed) return rtn_fb;
+					else t_temp = rtn_fb.rtn_value;
+
+					if (t_temp.type != '('){
+						fail_fb.reason = "Error: a '(' after String.get() is expected!";
+						return fail_fb;
+					}
+					else{
+						rtn_fb = expression();
+						if (!rtn_fb.succeed) return rtn_fb;
+						else t_temp = rtn_fb.rtn_value;
+
+						if (t_temp.type != '1'){
+							fail_fb.reason = "Error: an integer in String.get(Integer) is expected!";
+							return fail_fb;
+						}
+						else{
+							if (t_temp.number >= success_fb.rtn_value.value.length() || t_temp.number < 0){
+								fail_fb.reason = "Error: the index in String.get(Integer) should between 0 and String.length - 1!";
+								return fail_fb;
+							}
+							string s = success_fb.rtn_value.value.substr((int)(t_temp.number), 1);
+							success_fb.rtn_value.value = s;
+						}
+					}
+				}
+			}
+			else if (success_fb.rtn_value.type == '8') //'8': class  18:.var
+			{
+				t.type = 18;
+				t.var_name = t.value;
+				t.value = success_fb.rtn_value.value;
+
+				rtn_fb = ts.get();
+				if (!rtn_fb.succeed) return rtn_fb;
+				else t_temp = rtn_fb.rtn_value;
+
+				if (t_temp.type == '[') //array
+				{
+					rtn_fb = expression();
+					if (!rtn_fb.succeed) return rtn_fb;
+					else d = rtn_fb.rtn_value;
+
+					if (d.type != '1'){
+						fail_fb.reason = "Error: array can only be indexed by integer! This index: " + get_type(d) + ".";
+						return fail_fb;
+					}
+					else{
+						rtn_fb = ts.get();
+						if (!rtn_fb.succeed) return rtn_fb;
+						else t_temp = rtn_fb.rtn_value;
+
+						if (t_temp.type != ']'){
+							fail_fb.reason = "Error: a ']' is expected in the array!";
+							return fail_fb;
+						}
+						t.array_index = (int)d.number;
+					}
+				}
+				else{
+					ts.putback(t_temp);
+				}
+
+				rtn_fb = ts.get_value(t);
+				if (!rtn_fb.succeed) return rtn_fb;
+				else t = rtn_fb.rtn_value;
+
+				success_fb.rtn_value = t;
+			}
+		}
+		else if (t.type == 19) //class.func()
+		{
+			Feedback func_fb = ts.get_classFunc(success_fb.rtn_value.value, t.value);
+			if (!func_fb.succeed){
+				fail_fb.reason = "Error: Cannot find the function: " + success_fb.rtn_value.value + "." + t.value + ".";
+				return fail_fb;
+			}
+			int para_number = (int)(func_fb.rtn_value.number);
+			t.type = 19;
+			t.var_name = t.value;
+			t.value = success_fb.rtn_value.value;
+			t.number = para_number;
+
+			rtn_fb = construct_func(t);
+			if (!rtn_fb.succeed){
+				rtn_fb.reason += "(In function " + t.value + ")";
+				return rtn_fb;
+			}
+			else {
+				rtn_fb.rtn_value.modifiable = false;
+				success_fb = rtn_fb;
+			}
+
+			rtn_fb = cal_function(success_fb.rtn_value, ts.symbol);
+			if (!rtn_fb.succeed){
+				rtn_fb.reason += "(In function " + t.value + ")";
+				return rtn_fb;
+			}
+			else {
+				rtn_fb.rtn_value.modifiable = false;
+				success_fb = rtn_fb; // return rtn_fb;
+			}
+		}
+		else if (t.type == 9) //'++'
+		{
+			if (success_fb.rtn_value.type != '1' && success_fb.rtn_value.type != '2'){
+				fail_fb.reason = "Error: Only number can execute the operator: ++.";
+				return fail_fb;
+			}
+			else{
+				success_fb.rtn_value.number++;
+				success_fb.rtn_value.modifiable = false;
+			}
+		}
+		else if (t.type == 10) //'--'
+		{
+			if (success_fb.rtn_value.type != '1' && success_fb.rtn_value.type != '2'){
+				fail_fb.reason = "Error: Only number can execute the operator: --.";
+				return fail_fb;
+			}
+			else{
+				success_fb.rtn_value.number++;
+				success_fb.rtn_value.modifiable = false;
+			}
+		}
+		else{
+			ts.putback(t);
+			break;
+		}
+	}
+	return success_fb;
 }
 
 Expression::~Expression(){
