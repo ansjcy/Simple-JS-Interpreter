@@ -14,7 +14,20 @@
 typedef struct funcT func;
 struct funcT
 {
-    enum{FUNCTION = 0, INT = 1, STRING = 2, BOOL = 3, DOUBLE = 4, ARRAY = 5};
+    /*
+token:
+null: type = '0'
+integer: type = '1'  number = integer_value
+boolean: type = '5'  number = 0 or 1
+    double: type = '2'  number = double_value;
+string: type = '3'  value = string_value;
+function: type = '4'  value = function_name  number = # of parameter;
+null: type = '0'
+array: type = '6'  var_name = val_name  number = index;
+undefined: type = '7'
+     */
+
+    enum{FUNCTION = '4', INT = '1', STRING = '3', BOOL = '5', DOUBLE = '2', ARRAY = '6', UNDIFINED = '7'};
     char type;
     //function or var { int, string, bool, double, maybe array
     std::string value;     //if function, then it's address else its value in string format.

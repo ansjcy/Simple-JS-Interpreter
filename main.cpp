@@ -12,7 +12,20 @@ using namespace std;
 #include "JShashMap.hpp"
 #include "JSfunc.hpp"
 #include "interpreter.hpp"
-extern interpreter handler;
+#include "doIf.hpp"
+#include "funcHand.hpp"
+#include "readHand.hpp"
+interpreter handler;
+funcHandler funcHand;       //save func or var...
+readHandler readHand;       //read the next line code
+ifHandler ifHand;
+whileHandler whileHand;
+forHandler forHand;
+bool lastIf = false;
+bool isbreak = false;
+bool isreturn = false;
+func retVal;
+//extern interpreter handler;
 int main(void)
 {
     
