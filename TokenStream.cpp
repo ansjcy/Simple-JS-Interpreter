@@ -44,7 +44,7 @@ Feedback TokenStream::get_classFunc(string class_name, string func_name){
 }
 
 Feedback TokenStream::modify_value(token t){
-	cout << "modify_value " << t.var_name << "[" << t.array_index << "]" << endl;
+	cout << "modify_value " << t.var_name << "[" << t.array_index << "]" << " type:" << t.type << endl;
 	Feedback fb = symbol.modifyValue(t);
 	return fb;
 }
@@ -301,8 +301,15 @@ Feedback TokenStream::get(){
 					return fail_fb;
 				}
 				else{
-					fb.rtn_value.modifiable = true;
-					fb.rtn_value.var_name = s;
+					if (fb.rtn_value.type != '4') //simple var
+					{
+						fb.rtn_value.modifiable = true;
+						fb.rtn_value.var_name = s;
+					}
+					else{
+						fb.rtn_value.modifiable = false;
+						fb.rtn_value.type = 'f';
+					}
 
 					return fb;
 				}		

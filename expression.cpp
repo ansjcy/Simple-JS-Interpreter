@@ -989,6 +989,10 @@ Feedback Expression::primary(){
 		success_fb.rtn_value = d;
 		break; //return success_fb;
 	}
+	case 'f':
+		t.type = '4';
+		success_fb.rtn_value = t;
+		break;
 	case '1':
 	case '2':
 	case '3':
@@ -1105,6 +1109,7 @@ Feedback Expression::primary(){
 		else{
 			rtn_fb.rtn_value.number++;
 			rtn_fb.rtn_value.modifiable = false;
+			ts.modify_value(rtn_fb.rtn_value);
 			return rtn_fb;
 		}
 	case 10: //'--' before number
@@ -1115,9 +1120,10 @@ Feedback Expression::primary(){
 			return fail_fb;
 		}
 		else{
-			success_fb.rtn_value.number--;
+			rtn_fb.rtn_value.number--;
 			rtn_fb.rtn_value.modifiable = false;
-			return success_fb;
+			ts.modify_value(rtn_fb.rtn_value);
+			return rtn_fb;
 		}
 	default:
 		fail_fb.reason = "Error: primary expected.";
@@ -1250,6 +1256,7 @@ Feedback Expression::primary(){
 			else{
 				success_fb.rtn_value.number++;
 				success_fb.rtn_value.modifiable = false;
+				ts.modify_value(rtn_fb.rtn_value);
 			}
 		}
 		else if (t.type == 10) //'--'
@@ -1259,8 +1266,9 @@ Feedback Expression::primary(){
 				return fail_fb;
 			}
 			else{
-				success_fb.rtn_value.number++;
+				success_fb.rtn_value.number--;
 				success_fb.rtn_value.modifiable = false;
+				ts.modify_value(rtn_fb.rtn_value);
 			}
 		}
 		else{

@@ -12,8 +12,8 @@ double: type = '2'  number = double_value;
 string: type = '3'  value = string_value;
 function: type = '4'  value = function_name  number = # of parameter;
 null: type = '0'
-array: type = '6'  var_name = val_name  number = index;
-undefined: type = '7'
+array: type = '7'  var_name = val_name  number = index;
+undefined: type = '6'
 class: '8'  value = class_name;
 class.var: t.type = 18; t.value = class_name; t.var_name = var_name;
 class.func: t.type = 19; t.value = calss_name; t.var_name = func_name; t.number = # of para; para = parameters;
